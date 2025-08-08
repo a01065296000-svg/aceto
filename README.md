@@ -1,3 +1,48 @@
+import json
+import os
+
+class ConversationMemory:
+    def __init__(self, filename='conversation_memory.json'):
+        self.filename = filename
+        self.memory = self.load_memory()
+
+    def load_memory(self):
+        if os.path.exists(self.filename):
+            with open(self.filename, 'r', encoding='utf-8') as f:
+                print("[Memory] 대화 기록 불러옴.")
+                return json.load(f)
+        else:
+            print("[Memory] 새 대화 기록 저장소 생성.")
+            return []
+
+    def save_memory(self):
+        with open(self.filename, 'w', encoding='utf-8') as f:
+            json.dump(self.memory, f, ensure_ascii=False, indent=2)
+        print("[Memory] 대화 기록 저장 완료.")
+
+    def add_conversation(self, user_msg, ai_reply):
+        self.memory.append({
+            "user": user_msg,
+            "assistant": ai_reply
+        })
+        self.save_memory()
+
+    def get_all_conversations(self):
+        return self.memory
+
+
+# 사용 예시
+if __name__ == "__main__":
+    memory = ConversationMemory()
+
+    # 대화 추가
+    memory.add_conversation("안녕, 너 이름 뭐야?", "나는 aceto야. AI 친구지!")
+    memory.add_conversation("오늘 날씨 어때?", "오늘은 맑고 따뜻해요!")
+
+    # 저장된 대화 출력
+    for conv in memory.get_all_conversations():
+        print(f"사용자: {conv['user']}")
+        print(f"AI: {conv['assistant']}\n")
 # aceto
 acetoremember
 from selenium import webdriver
