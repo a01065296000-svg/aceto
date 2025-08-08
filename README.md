@@ -41,3 +41,38 @@ print("본문:", content)
 
 # 7. 브라우저 종료
 driver.quit()
+import json
+import os
+
+class ChatMemory:
+    def __init__(self, filename='chat_memory.json'):
+        self.filename = filename
+        self.memory = self.load_memory()
+
+    def load_memory(self):
+        if os.path.exists(self.filename):
+            with open(self.filename, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        else:
+            return {}
+
+    def save_memory(self):
+        with open(self.filename, 'w', encoding='utf-8') as f:
+            json.dump(self.memory, f, ensure_ascii=False, indent=2)
+
+    def remember(self, key, value):
+        self.memory[key] = value
+        self.save_memory()
+
+    def recall(self, key):
+        return self.memory.get(key, "기억에 없어요.")
+
+# 사용 예시
+if __name__ == "__main__":
+    chat = ChatMemory()
+
+    # 새로운 대화 저장
+    chat.remember('대화1', '안녕하세요, 오늘 뭐 도와드릴까요?')
+
+    # 저장된 대화 불러오기
+    print(chat.recall('대화1'))
