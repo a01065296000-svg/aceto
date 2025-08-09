@@ -1,0 +1,47 @@
+import json
+import os
+
+class SimpleMemory:
+    def __init__(self, filename='memory.json'):
+        self.filename = filename
+        self.memory = self.load_memory()
+
+    def load_memory(self):
+        if os.path.exists(self.filename):
+            with open(self.filename, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        else:
+            return {}
+
+    def save_memory(self):
+        with open(self.filename, 'w', encoding='utf-8') as f:
+            json.dump(self.memory, f, ensure_ascii=False, indent=2)
+
+    def remember(self, key, value):
+        self.memory[key] = value
+        self.save_memory()
+        print(f"[기억] '{key}' 항목 저장 완료.")
+
+    def recall(self, key):
+        return self.memory.get(key, "[기억 없음] 해당 항목을 찾을 수 없습니다.")
+
+    def show_all(self):
+        for k, v in self.memory.items():
+            print(f"{k}: {v}")
+
+# 사용 예시
+if __name__ == "__main__":
+    memory = SimpleMemory()
+
+    # 기억하기
+    memory.remember('이름', 'aceto')
+    memory.remember('좋아하는 음식', '피자')
+
+    # 기억 불러오기
+    print(memory.recall('이름'))
+    print(memory.recall('좋아하는 음식'))
+    print(memory.recall('모르는 항목'))  # 기억에 없는 항목
+
+    # 전체 기억 보기
+    print("\n전체 기억 내용:")
+    memory.show_all()
